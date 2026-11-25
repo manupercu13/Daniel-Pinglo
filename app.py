@@ -138,23 +138,35 @@ else:
     else:
         clientes_visibles = df_clientes
 
-    # Buscador y Segmentador lado a lado
-    col_busqueda, col_filtro = st.columns([1, 1])
+    # Buscador y Segmentadores lado a lado (3 columnas)
+    col_busqueda, col_filtro_cobranza, col_filtro_estado = st.columns([1.2, 1, 1])
     
     with col_busqueda:
         busqueda = st.text_input("🔍 Buscar cliente por nombre o teléfono:")
     
-    with col_filtro:
+    with col_filtro_cobranza:
         opciones_cobranza = sorted(clientes_visibles["Cobranza"].dropna().unique().tolist())
         filtro_cobranza = st.multiselect(
             "📊 Filtrar por Cobranza:",
             options=opciones_cobranza,
+            placeholder="Todas las cobranzas"
+        )
+
+    with col_filtro_estado:
+        opciones_estado = sorted(clientes_visibles["Estado"].dropna().unique().tolist())
+        filtro_estado = st.multiselect(
+            "📌 Filtrar Estados:",
+            options=opciones_estado,
             placeholder="Todos los estados"
         )
 
     # Aplicar filtro de Cobranza
     if filtro_cobranza:
         clientes_visibles = clientes_visibles[clientes_visibles["Cobranza"].isin(filtro_cobranza)]
+
+    # Aplicar filtro de Estados
+    if filtro_estado:
+        clientes_visibles = clientes_visibles[clientes_visibles["Estado"].isin(filtro_estado)]
 
     # Aplicar buscador rápido
     if busqueda:
